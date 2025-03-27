@@ -1,0 +1,35 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main  # 监听 main 分支的变化
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v2  # 检出代码
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'  # 配置 Node.js 版本，实际部署不一定需要 Node.js，视需求而定
+
+      - name: Install dependencies
+        run: |
+          npm install  # 如果你有任何依赖项（比如使用构建工具），可以在这里安装
+
+      - name: Build
+        run: |
+          npm run build  # 如果你有构建步骤，执行此命令。否则，跳过该步骤。
+
+      - name: Deploy to GitHub Pages
+        uses: JamesIves/github-pages-deploy-action@v4.3.5  # 使用这个 Action 来部署网站
+        with:
+          branch: gh-pages  # 发布到 gh-pages 分支
+          folder: ./  # 指定文件夹（通常是仓库的根目录）
+          token: ${{ secrets.GITHUB_TOKEN }}  # 使用 GitHub Token 进行认证
+
